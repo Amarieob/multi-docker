@@ -1,0 +1,22 @@
+language: generic
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t amarieob/react-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+  - docker run -e CI=true amarieob/react-test npm run test -- --coverage
+
+after_success:
+  - docker build -t amarieob/multi-client ./client
+  - docker build -t amarieob/multi-nginx ./nginx
+  - docker build -t amarieob/multi-server ./server
+  - docker build -t amarieob/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push amarieob/multi-client
+  - docker push amarieob/multi-nginx
+  - docker push amarieob/multi-server
+  - docker push amarieob/multi-worker
