@@ -20,6 +20,7 @@ after_success:
   - docker push amarieob/multi-nginx
   - docker push amarieob/multi-server
   - docker push amarieob/multi-worker
+  - docker push stephengrider/multi-client
 
 deploy:
   provider: elasticbeanstalk
